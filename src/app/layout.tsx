@@ -1,0 +1,25 @@
+import type { Metadata } from "next";
+import "./globals.css";
+import ClientSideLayout from "./clientside-layout";
+import { ThemeProvider } from "next-themes";
+
+export const metadata: Metadata = {
+  title: "BYTE3",
+  description: "Please change this",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <ClientSideLayout>{children}</ClientSideLayout>
+        </ThemeProvider>
+      </body>
+    </html>
+  );
+}

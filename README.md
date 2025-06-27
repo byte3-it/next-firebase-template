@@ -1,0 +1,19 @@
+# BYTE3 Next.js + Firebase template
+
+Create a .env file with the following content:
+
+```
+# CLIENT SIDE
+
+NEXT_PUBLIC_API_KEY=xxxx
+NEXT_PUBLIC_AUTH_DOMAIN=xxxx
+NEXT_PUBLIC_PROJECT_ID=xxxx
+NEXT_PUBLIC_STORAGE_BUCKET=xxxx
+NEXT_PUBLIC_MESSAGING_SENDER_ID=xxxx
+NEXT_PUBLIC_APP_ID=xxxx
+
+# SERVER SIDE
+
+GCP_CREDENTIALS_BASE64=xxxx
+
+```
