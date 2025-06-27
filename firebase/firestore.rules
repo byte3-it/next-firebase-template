@@ -1,0 +1,42 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Deny all writes
+    match /{document=**} {
+      allow write: if false;
+    }
+
+    // Helper function to check admin status
+    function isAdmin() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdminEnabled == true;
+    }
+
+    // /users/{userId} - only the user can read their own document
+    match /users/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // /enrollments/{enrollmentId} - public read access
+    match /enrollments/{enrollmentId} {
+      allow read: if true;
+
+      // /enrollments/{enrollmentId}/subscriptions/{subscriptionId}
+      match /subscriptions/{subscriptionId} {
+        allow read: if request.auth != null &&
+          (resource.data.userId == request.auth.uid || isAdmin());
+      }
+    }
+
+    // /payments/{paymentId} - only the user can read their own payments
+    match /payments/{paymentId} {
+      allow read: if request.auth != null && request.auth.uid == resource.data.userId;
+    }
+
+    // Fallback: allow read to admins only
+    match /{document=**} {
+      allow read: if isAdmin();
+    }
+  }
+}
