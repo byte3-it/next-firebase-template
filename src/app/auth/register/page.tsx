@@ -1,73 +1,69 @@
 "use client";
 
-import React, { useState } from "react";
-import { ROUTES } from "@/lib/routes";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
-import { auth } from "@/lib/firebase/firebaseClient";
+import DefaultLayout from "@/components/default-layout";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/lib/firebase/firebaseClient";
+import { useMutation } from "@tanstack/react-query";
+import { ROUTES } from "@/lib/routes";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { FirebaseError } from "firebase/app";
+import { createUserDetails } from "@/lib/server-actions/crudUserDetails";
+import { RegisterDtoType, RegisterForm } from "@/components/form/RegisterForm";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import z from "zod";
+import { pickFields } from "@/lib/utils";
+import { UserDetailsSchema } from "@/types";
 
-export default function Register() {
+export default function RegisterPage() {
   const router = useRouter();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const registerForm = useForm<z.infer<typeof RegisterDtoType>>({
+    resolver: zodResolver(RegisterDtoType),
+  });
 
-  const handleRegister = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      if (userCredential?.user) router.replace(ROUTES.APP_PROFILE);
-    } catch (e) {
-      console.error(e);
-      if (e instanceof FirebaseError) {
-        toast.error("Ops, la registrazione non è andata a buon fine... " + e.code);
+  const handleSignupMutation = useMutation({
+    mutationFn: async (data: z.infer<typeof RegisterDtoType>) => {
+      console.log("data", data);
+
+      const res = await createUserWithEmailAndPassword(auth, data.email, data.password);
+      console.log(res);
+
+      if (res.user) {
+        createUserDetails({
+          authIdToken: await res.user.getIdToken(),
+          userDetails: pickFields<z.infer<typeof UserDetailsSchema>>(
+            data,
+            Object.keys(UserDetailsSchema.shape) as (keyof z.infer<typeof UserDetailsSchema>)[]
+          ),
+        });
       } else {
-        toast.error("Ops, la registrazione non è andata a buon fine...");
+        throw new Error("Errore nel login");
       }
-    }
-  };
+    },
+    onSuccess: () => {
+      toast.success("Registrato con successo");
+      router.push(ROUTES.SETUP_ACCOUNT);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center">
-      <div className="flex flex-col items-center justify-center gap-2 min-w-sm">
-        <div className="text-2xl font-bold">Registrati</div>
-        <Input
-          id="email"
-          type="text"
-          autoFocus
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <Input
-          id="password"
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <Input
-          id="passwordConfirm"
-          type="password"
-          placeholder="Conferma Password"
-          value={passwordConfirm}
-          onChange={(e) => setPasswordConfirm(e.target.value)}
-        />
-
-        <Button variant="default" className="w-full" onClick={handleRegister} disabled={password !== passwordConfirm}>
-          Registrati
-        </Button>
-
-        <Link className="text-sm" href={ROUTES.LOGIN}>
-          Hai già un account? <span className="underline">Accedi</span>
-        </Link>
+    <DefaultLayout title="Registrati" centeredTitle>
+      <div className="flex flex-col items-center gap-4 my-10">
+        <div className="w-full max-w-md flex flex-col gap-4">
+          <RegisterForm form={registerForm} onSubmit={handleSignupMutation.mutate} submitButtonLabel="Registrati" />
+          <div className="flex items-center gap-2">
+            <span>Hai già un account?</span>
+            <Link className="underline" href={ROUTES.LOGIN}>
+              Accedi
+            </Link>
+          </div>
+        </div>
       </div>
-    </div>
+    </DefaultLayout>
   );
 }

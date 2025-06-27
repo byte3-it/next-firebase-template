@@ -1,65 +1,64 @@
 "use client";
 
-import React, { useState } from "react";
-import { ROUTES } from "@/lib/routes";
-import toast from "react-hot-toast";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { auth } from "@/lib/firebase/firebaseClient";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import Link from "next/link";
+import { auth } from "@/lib/firebase/firebaseClient";
+import { useMutation } from "@tanstack/react-query";
+import { ROUTES } from "@/lib/routes";
+import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { FirebaseError } from "firebase/app";
+import Link from "next/link";
+import DefaultLayout from "@/components/default-layout";
+import { LoginDtoType, LoginForm } from "@/components/form/LoginForm";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-export default function Login() {
+export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
-  const handleLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      if (userCredential?.user) router.replace(ROUTES.APP_PROFILE);
-    } catch (e) {
-      console.error(e);
-      if (e instanceof FirebaseError) {
-        toast.error("Ops, login non andato a buon fine... " + e.code);
+  const form = useForm<z.infer<typeof LoginDtoType>>({
+    resolver: zodResolver(LoginDtoType),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const handleLoginMutation = useMutation({
+    mutationFn: async (data: z.infer<typeof LoginDtoType>) => {
+      const res = await signInWithEmailAndPassword(auth, data.email, data.password);
+      console.log(res);
+
+      if (res.user) {
+        router.replace(ROUTES.APP_HOME);
       } else {
-        toast.error("Ops, login non andato a buon fine...");
+        toast.error("Errore nel login");
       }
-    }
-  };
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center">
-      <div className="flex flex-col items-center justify-center gap-2 min-w-sm">
-        <div className="text-2xl font-bold">Accedi</div>
-        <Input
-          id="email"
-          type="text"
-          autoFocus
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <Input
-          id="password"
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <Button variant="default" className="w-full" onClick={handleLogin}>
-          Login
-        </Button>
-        <Link className="text-sm" href={ROUTES.FORGOT_PASSWORD}>
-          Hai dimenticato la password? <span className="underline">Recupera la password</span>
-        </Link>
-        <Link className="text-sm" href={ROUTES.REGISTER}>
-          Non hai un account? <span className="underline">Registrati</span>
-        </Link>
+    <DefaultLayout title="Login" centeredTitle>
+      <div className="flex flex-col items-center gap-4 my-10">
+        <div className="w-full max-w-md flex flex-col gap-4">
+          <LoginForm onSubmit={handleLoginMutation.mutate} form={form} />
+          <div className="flex items-center gap-2">
+            <span>Don&apos;t have an account?</span>
+            <Link className="underline" href={ROUTES.REGISTER}>
+              Register
+            </Link>
+          </div>
+          <div className="flex items-center gap-2">
+            <span>Forgot password?</span>
+            <Link className="underline" href={ROUTES.FORGOT_PASSWORD}>
+              Reset password
+            </Link>
+          </div>
+        </div>
       </div>
-    </div>
+    </DefaultLayout>
   );
 }

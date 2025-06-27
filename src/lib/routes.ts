@@ -11,6 +11,9 @@ export const ROUTES = {
   // auth - forgot password
   FORGOT_PASSWORD: "/auth/forgot-password",
 
+  // auth - setup account
+  SETUP_ACCOUNT: "/setup-account",
+
   // * * * * * * * * * * * * * * * * * * * * * * * *
   // APP
 
