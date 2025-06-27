@@ -9,17 +9,23 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { FullPageLoader } from "@/components/full-page-loader";
+import { useCurrentUserDetails } from "@/hooks/useCurrentUserDetails";
 
 export default function SetupAccount() {
   const [user, loading] = useAuthState(auth);
   const router = useRouter();
+  const userDetailsQuery = useCurrentUserDetails();
 
   const handleLogout = async () => {
     await signOut(auth);
     router.push(ROUTES.LOGIN);
   };
 
-  if (loading) return <FullPageLoader />;
+  if (loading || userDetailsQuery.isLoading) return <FullPageLoader />;
+
+  if (userDetailsQuery.data?.isBackofficeEnabled) {
+    router.push(ROUTES.APP_PROFILE);
+  }
 
   return (
     <div className="h-screen flex flex-col items-center justify-center">
