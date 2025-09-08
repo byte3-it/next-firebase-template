@@ -2,6 +2,8 @@
 
 A modern, production-ready template for building full-stack applications with Next.js 15, Firebase, and TypeScript. This template provides a solid foundation with authentication, user management, and a beautiful UI built with Radix UI and Tailwind CSS.
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fbyte3-it%2Fnext-firebase-template&env=NEXT_PUBLIC_FIREBASE_API_KEY,NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,NEXT_PUBLIC_FIREBASE_PROJECT_ID,NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,NEXT_PUBLIC_FIREBASE_APP_ID,FIREBASE_ADMIN_KEY_BASE64&envDescription=Get%20the%20env%20variables%20on%20Firebase&envLink=https%3A%2F%2Ffirebase.google.com%2F&project-name=byte3-netxtjs-firebase-template&repository-name=byte3-netxtjs-firebase-template)
+
 ## ✨ Features
 
 ### 🔐 Authentication & User Management
