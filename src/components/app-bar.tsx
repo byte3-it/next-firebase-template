@@ -31,8 +31,9 @@ export const AppBar = () => {
   }
 
   return (
-    <div className="bg-gray-700 flex flex-row items-center p-2 gap-2">
-      <div className="text-white text-2xl font-bold">Byte3 Next Firebase Template</div>
+    <div className="flex flex-row items-center px-4 p-2 gap-2 border-b border-gray-200 dark:border-gray-800">
+      <div className="text-2xl font-bold">Byte3</div>
+      <div className="text-2xl">Next Firebase Template</div>
 
       <div className="flex-1" />
 
