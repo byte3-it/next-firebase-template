@@ -29,17 +29,17 @@ export default function ForgotPassword() {
       toast.error(error.message);
     },
     onSuccess: () => {
-      toast.success("Email inviata con successo");
+      toast.success("Email sent successfully");
     },
   });
 
   return (
-    <DefaultLayout title="Recupera la password" centeredTitle>
+    <DefaultLayout title="Forgot password" centeredTitle>
       <div className="flex flex-col items-center gap-4 my-10">
         <div className="w-full max-w-md flex flex-col gap-4">
           <ResetPasswordForm onSubmit={handleResetPassword.mutate} form={form} />
           <div className="flex items-center gap-2">
-            <span>Hai già un account?</span>
+            <div>Already have an account?</div>
             <Link className="underline" href={ROUTES.LOGIN}>
               Login
             </Link>

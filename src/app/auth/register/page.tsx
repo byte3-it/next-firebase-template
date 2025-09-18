@@ -39,11 +39,11 @@ export default function RegisterPage() {
           ),
         });
       } else {
-        throw new Error("Errore nel login");
+        throw new Error("Login error");
       }
     },
     onSuccess: () => {
-      toast.success("Registrato con successo");
+      toast.success("Registered successfully");
       router.push(ROUTES.SETUP_ACCOUNT);
     },
     onError: (error) => {
@@ -52,14 +52,14 @@ export default function RegisterPage() {
   });
 
   return (
-    <DefaultLayout title="Registrati" centeredTitle>
+    <DefaultLayout title="Register" centeredTitle>
       <div className="flex flex-col items-center gap-4 my-10">
         <div className="w-full max-w-md flex flex-col gap-4">
-          <RegisterForm form={registerForm} onSubmit={handleSignupMutation.mutate} submitButtonLabel="Registrati" />
+          <RegisterForm form={registerForm} onSubmit={handleSignupMutation.mutate} submitButtonLabel="Register" />
           <div className="flex items-center gap-2">
-            <span>Hai già un account?</span>
+            <span>Already have an account?</span>
             <Link className="underline" href={ROUTES.LOGIN}>
-              Accedi
+              Login
             </Link>
           </div>
         </div>

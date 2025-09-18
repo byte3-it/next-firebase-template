@@ -1,6 +1,6 @@
 "use server";
 
-import { UserDetailsSchema } from "@/types";
+import { UserDetailsSchema, UserDetailsTypeDoc } from "@/types";
 import { COLLECTIONS } from "../firebase/firebaseConstants";
 import { adminDb } from "../firebase/firebaseServer";
 import { z } from "zod";
@@ -15,7 +15,11 @@ export async function createUserDetails({
   const userDoc = await adminDb.doc(`${COLLECTIONS.USERS}/${authUser.uid}`).get();
 
   if (!userDoc.exists) {
-    await adminDb.doc(`${COLLECTIONS.USERS}/${authUser.uid}`).set({ ...userDetails, isAdminEnabled: false });
+    const userData: Omit<UserDetailsTypeDoc, "id"> = {
+      ...userDetails,
+      isBackofficeEnabled: !!userDetails.isBackofficeEnabled,
+    };
+    await adminDb.doc(`${COLLECTIONS.USERS}/${authUser.uid}`).set(userData);
     return { message: "User registered" };
   }
 

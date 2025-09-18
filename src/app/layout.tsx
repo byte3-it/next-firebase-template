@@ -5,7 +5,7 @@ import { ThemeProvider } from "next-themes";
 
 export const metadata: Metadata = {
   title: "BYTE3",
-  description: "Please change this",
+  description: "Change this",
 };
 
 export default function RootLayout({

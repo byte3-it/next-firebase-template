@@ -32,7 +32,7 @@ export default function LoginPage() {
       if (res.user) {
         router.replace(ROUTES.APP_HOME);
       } else {
-        toast.error("Errore nel login");
+        toast.error("Login error");
       }
     },
     onError: (error) => {
@@ -46,7 +46,7 @@ export default function LoginPage() {
         <div className="w-full max-w-md flex flex-col gap-4">
           <LoginForm onSubmit={handleLoginMutation.mutate} form={form} />
           <div className="flex items-center gap-2">
-            <span>Don&apos;t have an account?</span>
+            <div>Don&apos;t have an account?</div>
             <Link className="underline" href={ROUTES.REGISTER}>
               Register
             </Link>

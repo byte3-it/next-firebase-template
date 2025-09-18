@@ -33,17 +33,17 @@ export default function SetupAccount() {
         <div className="text-2xl font-bold">Setup account</div>
 
         <Input id="uid" type="text" value={user?.uid ?? "-"} readOnly />
-        <div>Copia questo UID e invialo al tuo amministratore per attivare il tuo account</div>
+        <div>Copy this ID and send it to administrators to activate your account</div>
 
         <Button
           variant="default"
           className="w-full"
           onClick={() => {
             navigator.clipboard.writeText(user?.uid ?? "-");
-            toast.success("UID copiato");
+            toast.success("ID copied");
           }}
         >
-          Copia
+          Copy
         </Button>
 
         <Button
