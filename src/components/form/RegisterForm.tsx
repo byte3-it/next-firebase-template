@@ -35,7 +35,7 @@ export const RegisterForm = ({
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="Email" {...field} />
+                <Input type="email" placeholder="Email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
