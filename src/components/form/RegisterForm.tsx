@@ -8,8 +8,8 @@ import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 
 export const RegisterDtoType = UserDetailsSchema.extend({
-  password: z.string(),
-  confirmPassword: z.string(),
+  password: z.string().min(7),
+  confirmPassword: z.string().min(7),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Le password non coincidono",
   path: ["confirmPassword"],
